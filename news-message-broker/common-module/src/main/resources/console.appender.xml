@@ -1,0 +1,12 @@
+<included>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+
+    <!-- If if true, may have a problem for windows -->
+    <withJansi>false</withJansi>
+      <encoder>
+        <pattern>
+          %d{HH:mm:ss.SSS} %-5level [%t] %logger{36} - %msg%n
+        </pattern>
+      </encoder>
+  </appender>
+</included>
