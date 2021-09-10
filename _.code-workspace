@@ -2,6 +2,9 @@
   "folders": [
     {
       "path": "news-message-broker"
+    },
+    {
+      "path": "database"
     }
   ],
   "settings": {

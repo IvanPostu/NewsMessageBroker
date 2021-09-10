@@ -31,3 +31,4 @@ build/
 
 *.log
 api.http
+database/local.running.db
