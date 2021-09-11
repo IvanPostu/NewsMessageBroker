@@ -2,7 +2,10 @@ package com.ivan.custom_message_broker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.ObjectInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.UUID;
 
@@ -18,20 +21,29 @@ public class SenderListener implements Runnable {
 
     @Override
     public void run() {
-        boolean run = true;
+        InputStream input;
+        try {
+            input = socket.getInputStream();
 
-        log.info("Serve sender {}", senderUuid.toString());
 
-        while (run) {
-            try {
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                String message = (String) ois.readObject();
-                log.info("Received message: {}", message);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                log.error("Connection with sender: {} closed", senderUuid.toString());
-                run = false;
+            InputStreamReader isr = new InputStreamReader(input);
+            BufferedReader br = new BufferedReader(isr);
+            String data = null;
+
+            log.info("Serve sender {}", senderUuid.toString());
+
+
+            while ((data = br.readLine()) != null) {
+                try {
+                    log.info("Received message: {}", data);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    log.error("Connection with sender: {} closed", senderUuid.toString());
+                }
             }
+        } catch (IOException e1) {
+            log.error(e1.getMessage());
+            return;
         }
     }
 

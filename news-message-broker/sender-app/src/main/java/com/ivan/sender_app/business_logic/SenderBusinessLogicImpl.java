@@ -1,8 +1,11 @@
 package com.ivan.sender_app.business_logic;
 
+import com.ivan.common_module.JsonUtils;
+import com.ivan.common_module.models.ConnectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -10,16 +13,10 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
     private static Logger log = LoggerFactory.getLogger(SenderBusinessLogicImpl.class);
 
     private Socket messageBrokerSocket;
+    private PrintWriter socketWriter;
 
     @Override
     public boolean isConnected() {
-        try {
-            return messageBrokerSocket != null
-                    && messageBrokerSocket.isConnected()
-                    && messageBrokerSocket.getInputStream().read() != -1;
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
 
         return false;
     }
@@ -28,19 +25,28 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
     public void reconnectAsync(String host, int port) {
         log.info("Reconnect to {} : {}", host, port);
 
-        if (messageBrokerSocket != null) {
-            try {
-                messageBrokerSocket.close();
-                messageBrokerSocket = null;
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }
+        closeOldResources();
 
         try {
             messageBrokerSocket = new Socket(
                     InetAddress.getByName(host), port);
-            log.info("Socket is alive: {}", messageBrokerSocket.isConnected());
+
+            boolean isConnected = messageBrokerSocket.isConnected();
+            log.info("Socket is alive: {}", isConnected);
+
+            if (isConnected) {
+                socketWriter = new PrintWriter(
+                        messageBrokerSocket.getOutputStream());
+
+                ConnectModel model = new ConnectModel();
+                model.setConnectionType(ConnectModel.SENDER_CONNECTION_TYPE);
+
+                String jsonModel = JsonUtils.toJson(model);
+
+                socketWriter.println(jsonModel);
+                socketWriter.flush();
+            }
+
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -66,4 +72,23 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
 
     }
 
+    private void closeOldResources() {
+        if (messageBrokerSocket != null) {
+            try {
+                messageBrokerSocket.close();
+                messageBrokerSocket = null;
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
+
+        if (socketWriter != null) {
+            try {
+                socketWriter.close();
+                socketWriter = null;
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+    }
 }

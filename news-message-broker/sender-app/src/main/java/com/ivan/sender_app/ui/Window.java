@@ -18,7 +18,6 @@ import java.awt.GridLayout;
 public class Window extends JFrame {
     private static Logger log = LoggerFactory.getLogger(Window.class);
     private final SenderBusinessLogic senderBusinessLogic;
-    private boolean isConnectionStatusCheck = false;
 
     public Window(String name, SenderBusinessLogic senderBusinessLogic) {
         super(name);
@@ -52,11 +51,13 @@ public class Window extends JFrame {
 
         JPanel bottomPanel2 = new JPanel();
         bottomPanel2.setBackground(Color.LIGHT_GRAY);
-        bottomPanel2.add(new JLabel("Enter IP"));
+        bottomPanel2.add(new JLabel("Enter Host"));
         JTextField ipTextField = new JTextField(9);
+        ipTextField.setText("127.0.0.1");
         bottomPanel2.add(ipTextField);
         bottomPanel2.add(new JLabel("Enter Port"));
         JTextField portTextField = new JTextField(4);
+        portTextField.setText("8080");
         bottomPanel2.add(portTextField);
         JButton reconnectButton = new JButton("Reconnect");
         reconnectButton.addActionListener(event -> {
