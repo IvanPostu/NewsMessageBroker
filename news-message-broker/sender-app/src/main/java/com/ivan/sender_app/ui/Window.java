@@ -85,7 +85,7 @@ public class Window extends JFrame {
         this.getContentPane().add(BorderLayout.CENTER, centerPanel);
         this.getContentPane().add(BorderLayout.NORTH, topPanel);
         this.setVisible(true);
-        this.setLocationRelativeTo(null);
+        // this.setLocationRelativeTo(null);
 
     }
 }

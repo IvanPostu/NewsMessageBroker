@@ -5,6 +5,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 public abstract class JsonUtils {
 
@@ -19,12 +20,12 @@ public abstract class JsonUtils {
     }
 
     @SuppressWarnings({"unchecked"})
-    public static <T> T toJavaObject(String json)
+    public static LinkedHashMap<String, Object> toJavaObject(String json)
             throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper mapper = new ObjectMapper();
-        Object javaObject = mapper.readValue(json, Object.class);
+        LinkedHashMap<String, Object> javaObject = mapper.readValue(json, LinkedHashMap.class);
 
-        return (T) javaObject;
+        return javaObject;
     }
 
 }

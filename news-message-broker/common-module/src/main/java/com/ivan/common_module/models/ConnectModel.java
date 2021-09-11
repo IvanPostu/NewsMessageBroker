@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConnectModel {
 
-    public static final byte SENDER_CONNECTION_TYPE = 1;
-    public static final byte RECEIVER_CONNECTION_TYPE = 2;
+    public static final String SENDER_CONNECTION_TYPE = "SENDER_CONNECTION_TYPE";
+    public static final String RECEIVER_CONNECTION_TYPE = "RECEIVER_CONNECTION_TYPE";
 
-    private byte connectionType; // SENDER | RECEIVER
+    private String connectionType; // SENDER | RECEIVER
 }

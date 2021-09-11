@@ -16,7 +16,6 @@ public class SocketServer {
 
     private final MessageBroker messageBroker;
     private final ExecutorService threadPool;
-    private ServerSocket server;
 
     public SocketServer(MessageBroker messageBroker) {
         this.messageBroker = messageBroker;
@@ -26,13 +25,12 @@ public class SocketServer {
     public void run() throws IOException, ClassNotFoundException {
 
         try (ServerSocket server = new ServerSocket(SERVER_PORT)) {
-            log.info("Server is up on port: {}", SERVER_PORT);
+            log.info("Server is up on port: {}, thread pull size: {}", SERVER_PORT,
+                    THREAD_POOL_SIZE);
             while (true) {
                 Socket socket = server.accept();
-                UUID senderGeneratedUuid = UUID.randomUUID();
-                // log.info("New sender with uuid: {} has been connected",
-                //         senderGeneratedUuid.toString());
-                threadPool.submit(new SenderListener(socket, senderGeneratedUuid));
+                UUID generatedUuid = UUID.randomUUID();
+                threadPool.submit(new SocketListenerRunnable(socket, generatedUuid, messageBroker));
             }
         }
 
