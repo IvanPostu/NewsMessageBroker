@@ -10,7 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 @ToString
-public class NewsModel implements Serializable {
+public class NewsModel extends MessageBrokerEntity implements Serializable {
 
     private String category;
     private String author;

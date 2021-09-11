@@ -5,6 +5,7 @@ import com.ivan.common_module.models.ConnectModel;
 import com.ivan.common_module.models.NewsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.swing.JOptionPane;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -13,8 +14,16 @@ import java.net.Socket;
 public class SenderBusinessLogicImpl implements SenderBusinessLogic {
     private static Logger log = LoggerFactory.getLogger(SenderBusinessLogicImpl.class);
 
+
+    /**
+     * TCP Socket resources 
+     */
     private Socket messageBrokerSocket;
     private PrintWriter socketWriter;
+
+    /**
+     * gRPC resources 
+     */
 
     @Override
     public boolean isConnected() {
@@ -23,11 +32,32 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
     }
 
     @Override
-    public void reconnectAsync(String host, int port) {
+    public void reconnectAsync(String host, int port, ConnectionType connectionType) {
         log.info("Reconnect to {} : {}", host, port);
 
         closeOldResources();
 
+        boolean tcpSuccess = ConnectionType.TCP_SOCKET.equals(connectionType)
+                && connectWithSocket(host, port);
+
+        boolean grpcSuccess = ConnectionType.GRPC_PROTO.equals(connectionType)
+                && connectWithGrpc(host, port);
+
+        if (tcpSuccess || grpcSuccess) {
+            JOptionPane.showMessageDialog(null,
+                    "Connected with success " + connectionType.toString(),
+                    "Info",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Connected with error ",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+
+    }
+
+    private boolean connectWithSocket(String host, int port) {
         try {
             messageBrokerSocket = new Socket(
                     InetAddress.getByName(host), port);
@@ -48,9 +78,16 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
                 socketWriter.flush();
             }
 
+            return true;
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+
+        return false;
+    }
+
+    private boolean connectWithGrpc(String host, int port) {
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
@@ -84,6 +121,9 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
 
     }
 
+    /**
+     * Close old socket and grpc resources if exists
+     */
     private void closeOldResources() {
         if (messageBrokerSocket != null) {
             try {

@@ -1,24 +1,42 @@
 package com.ivan.custom_message_broker;
 
+import com.ivan.common_module.models.NewsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Map;
+import java.util.Queue;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MessageBroker {
     private static final Logger log = LoggerFactory.getLogger(MessageBroker.class);
 
-    // private final ExecutorService threadPool;
+    private Map<String, Queue<Object>> data = new ConcurrentHashMap<>();
 
-    // private final ConcurrentHashMap<UUID, Socket> senders;
-    // private final ConcurrentHashMap<UUID, Socket> receivers;
+    private Map<String, UUID> receivers = new ConcurrentHashMap<>();
 
     public MessageBroker() {
-        // this.threadPool = Executors.newFixedThreadPool(10);
 
-        // this.senders = new ConcurrentHashMap<UUID, Socket>();
-        // this.receivers = new ConcurrentHashMap<UUID, Socket>();
     }
 
-    public void pushEvent(MessageBrokerEventType type, Object payload) {
-        log.info("Push event: {}", type.toString());
+    public void receiverConnected(UUID receiverUuid) {
+        log.info("Receiver with uuid: {} connected", receiverUuid);
     }
+
+    public void senderConnected(UUID senderUuid) {
+        log.info("Sender with uuid: {} connected", senderUuid);
+    }
+
+    public void receiverDisconnected(UUID receiverUuid) {
+        log.info("Receiver with uuid: {} disconnected", receiverUuid);
+    }
+
+    public void senderDisconnected(UUID senderUuid) {
+        log.info("Sender with uuid: {} disconnected", senderUuid);
+    }
+
+    public void publishMessage(NewsModel newsModel) {
+        log.info("Publish model with data: {}", newsModel);
+    }
+
 }

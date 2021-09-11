@@ -6,7 +6,7 @@ public interface SenderBusinessLogic {
 
     boolean isConnected();
 
-    void reconnectAsync(String host, int port);
+    void reconnectAsync(String host, int port, ConnectionType connectionType);
 
     boolean sendNews(NewsModel newsModel);
 

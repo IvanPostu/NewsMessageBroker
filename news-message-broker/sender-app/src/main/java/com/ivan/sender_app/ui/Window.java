@@ -1,14 +1,17 @@
 package com.ivan.sender_app.ui;
 
 import com.ivan.common_module.models.NewsModel;
+import com.ivan.sender_app.business_logic.ConnectionType;
 import com.ivan.sender_app.business_logic.SenderBusinessLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -27,8 +30,23 @@ public class Window extends JFrame {
         this.senderBusinessLogic = senderBusinessLogic;
 
         JPanel topPanel = new JPanel();
-        topPanel.setBackground(Color.YELLOW);
+        topPanel.setBackground(Color.lightGray);
+        topPanel.add(new JLabel("Enter Topic"));
+        JTextField topickTextField = new JTextField(10);
+        topPanel.add(topickTextField);
 
+        JRadioButton tcpSocket = new JRadioButton("TCP Socket", true);
+        JRadioButton gRpc = new JRadioButton("gRPC proto", false);
+        {
+            ButtonGroup group = new ButtonGroup();
+            group.add(tcpSocket);
+            group.add(gRpc);
+            JPanel panel = new JPanel();
+            panel.add(tcpSocket);
+            panel.add(gRpc);
+
+            topPanel.add(panel);
+        }
 
         JPanel bottomPanel1 = new JPanel();
         bottomPanel1.setLayout(new GridLayout(3, 0));
@@ -80,7 +98,16 @@ public class Window extends JFrame {
 
             try {
                 int port = Integer.parseInt(portTextField.getText());
-                senderBusinessLogic.reconnectAsync(ipTextField.getText(), port);
+
+
+                ConnectionType connectionType = tcpSocket.isSelected()
+                        ? ConnectionType.TCP_SOCKET
+                        : gRpc.isSelected()
+                                ? ConnectionType.GRPC_PROTO
+                                : null;
+
+                senderBusinessLogic.reconnectAsync(ipTextField.getText(), port, connectionType);
+
             } catch (NumberFormatException exception) {
                 JOptionPane.showMessageDialog(getParent(),
                         "Invalid port.",

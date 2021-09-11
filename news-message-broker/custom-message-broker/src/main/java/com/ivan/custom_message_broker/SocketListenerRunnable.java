@@ -53,12 +53,10 @@ public class SocketListenerRunnable implements Runnable {
             connectModel = processConnectEvent(br);
 
             if (connectModel.getConnectionType().equals(ConnectModel.RECEIVER_CONNECTION_TYPE)) {
-                messageBroker.pushEvent(
-                        MessageBrokerEventType.RECEIVER_CONNECTED, connectionUuid);
+                messageBroker.receiverConnected(connectionUuid);
             }
             if (connectModel.getConnectionType().equals(ConnectModel.SENDER_CONNECTION_TYPE)) {
-                messageBroker.pushEvent(
-                        MessageBrokerEventType.SENDER_CONNECTED, connectionUuid);
+                messageBroker.senderConnected(connectionUuid);
             }
 
             String data = null;
@@ -71,17 +69,15 @@ public class SocketListenerRunnable implements Runnable {
             log.error(e1.getMessage());
         } finally {
 
-            // push disconnect event
             if (connectModel != null) {
                 if (connectModel.getConnectionType()
                         .equals(ConnectModel.RECEIVER_CONNECTION_TYPE)) {
-                    messageBroker.pushEvent(
-                            MessageBrokerEventType.RECEIVER_DISCONNECTED, connectionUuid);
+
+                    messageBroker.receiverDisconnected(connectionUuid);
                 }
 
                 if (connectModel.getConnectionType().equals(ConnectModel.SENDER_CONNECTION_TYPE)) {
-                    messageBroker.pushEvent(
-                            MessageBrokerEventType.SENDER_DISCONNECTED, connectionUuid);
+                    messageBroker.senderDisconnected(connectionUuid);
                 }
             }
 
@@ -98,10 +94,10 @@ public class SocketListenerRunnable implements Runnable {
             newModel.setCategory((String) newsModel.get("category"));
             newModel.setContent((String) newsModel.get("content"));
 
-            messageBroker.pushEvent(MessageBrokerEventType.PUBLISH, newModel);
+            messageBroker.publishMessage(newModel);
 
         } catch (Exception e) {
-            log.warn("Received unknown message: {}", e.getMessage());
+            log.warn("processSenderMessage error: {}", e.getMessage());
         }
     }
 
