@@ -4,7 +4,7 @@ public interface SenderBusinessLogic {
 
     boolean isConnected();
 
-    void connectAsync();
+    void reconnectAsync(String host, int port);
 
     boolean putMessageInLocalQueue(String category, String message);
 

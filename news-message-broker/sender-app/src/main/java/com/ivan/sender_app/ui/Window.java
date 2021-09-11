@@ -1,8 +1,12 @@
 package com.ivan.sender_app.ui;
 
+import com.ivan.sender_app.business_logic.SenderBusinessLogic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -12,15 +16,18 @@ import java.awt.Color;
 import java.awt.GridLayout;
 
 public class Window extends JFrame {
-    public Window(String name) {
+    private static Logger log = LoggerFactory.getLogger(Window.class);
+    private final SenderBusinessLogic senderBusinessLogic;
+    private boolean isConnectionStatusCheck = false;
+
+    public Window(String name, SenderBusinessLogic senderBusinessLogic) {
         super(name);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(450, 300);
+        this.senderBusinessLogic = senderBusinessLogic;
 
         JPanel topPanel = new JPanel();
-        JLabel connectionStatusLabel = new JLabel(Constants.CONNECTION_STATUS_TEXT + "None");
         topPanel.setBackground(Color.YELLOW);
-        topPanel.add(connectionStatusLabel);
 
 
         JPanel bottomPanel1 = new JPanel();
@@ -52,6 +59,19 @@ public class Window extends JFrame {
         JTextField portTextField = new JTextField(4);
         bottomPanel2.add(portTextField);
         JButton reconnectButton = new JButton("Reconnect");
+        reconnectButton.addActionListener(event -> {
+
+            try {
+                int port = Integer.parseInt(portTextField.getText());
+                senderBusinessLogic.reconnectAsync(ipTextField.getText(), port);
+            } catch (NumberFormatException exception) {
+                JOptionPane.showMessageDialog(getParent(),
+                        "Invalid port.",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+
+        });
         bottomPanel2.add(reconnectButton);
 
         JTextArea ta = new JTextArea(5, 20);

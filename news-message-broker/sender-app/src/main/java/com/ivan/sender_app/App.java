@@ -1,5 +1,6 @@
 package com.ivan.sender_app;
 
+import com.ivan.sender_app.business_logic.SenderBusinessLogicImpl;
 import com.ivan.sender_app.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ public class App {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             log.info("Window instace created with success");
-            new Window("News Message Broker (Sender)");
+            new Window("News Message Broker (Sender)", new SenderBusinessLogicImpl());
         });
     }
 }
