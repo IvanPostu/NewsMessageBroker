@@ -2,6 +2,7 @@ package com.ivan.sender_app.business_logic;
 
 import com.ivan.common_module.JsonUtils;
 import com.ivan.common_module.models.ConnectModel;
+import com.ivan.common_module.models.NewsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
@@ -53,7 +54,18 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
     }
 
     @Override
-    public boolean putMessageInLocalQueue(String category, String message) {
+    public boolean sendNews(NewsModel newsModel) {
+
+
+        try {
+            String jsonModel = JsonUtils.toJson(newsModel);
+            socketWriter.println(jsonModel);
+            socketWriter.flush();
+            return true;
+        } catch (Exception e) {
+            log.error("sendNews error: {}", e);
+        }
+
         return false;
     }
 

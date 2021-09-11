@@ -1,5 +1,6 @@
 package com.ivan.sender_app.ui;
 
+import com.ivan.common_module.models.NewsModel;
 import com.ivan.sender_app.business_logic.SenderBusinessLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ public class Window extends JFrame {
         bottomPanel1.setLayout(new GridLayout(3, 0));
         JTextField categoryTextField = new JTextField(10);
         JTextField authorTextField = new JTextField(10);
+        JTextArea textArea = new JTextArea(5, 20);
 
         {
             JPanel p = new JPanel();
@@ -47,7 +49,21 @@ public class Window extends JFrame {
             bottomPanel1.add(p, 1, 0);
         }
 
-        bottomPanel1.add(new JButton("Send news"), 2, 0);
+        JButton sendNewsButton = new JButton("Send news");
+        bottomPanel1.add(sendNewsButton, 2, 0);
+
+        sendNewsButton.addActionListener(event -> {
+            String author = authorTextField.getText();
+            String category = categoryTextField.getText();
+            String content = textArea.getText();
+
+            NewsModel newsModel = new NewsModel();
+            newsModel.setAuthor(author);
+            newsModel.setCategory(category);
+            newsModel.setContent(content);
+
+            sendNews(newsModel);
+        });
 
         JPanel bottomPanel2 = new JPanel();
         bottomPanel2.setBackground(Color.LIGHT_GRAY);
@@ -75,8 +91,7 @@ public class Window extends JFrame {
         });
         bottomPanel2.add(reconnectButton);
 
-        JTextArea ta = new JTextArea(5, 20);
-        JScrollPane scrollPane = new JScrollPane(ta);
+        JScrollPane scrollPane = new JScrollPane(textArea);
         JPanel centerPanel = new JPanel();
         centerPanel.add(BorderLayout.NORTH, scrollPane);
         centerPanel.add(BorderLayout.SOUTH, bottomPanel1);
@@ -85,7 +100,12 @@ public class Window extends JFrame {
         this.getContentPane().add(BorderLayout.CENTER, centerPanel);
         this.getContentPane().add(BorderLayout.NORTH, topPanel);
         this.setVisible(true);
-        // this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
 
+    }
+
+    private void sendNews(NewsModel newsModel) {
+        log.info(newsModel.toString());
+        senderBusinessLogic.sendNews(newsModel);
     }
 }

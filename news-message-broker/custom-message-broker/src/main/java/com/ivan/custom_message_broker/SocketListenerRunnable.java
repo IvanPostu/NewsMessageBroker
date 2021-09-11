@@ -2,6 +2,7 @@ package com.ivan.custom_message_broker;
 
 import com.ivan.common_module.JsonUtils;
 import com.ivan.common_module.models.ConnectModel;
+import com.ivan.common_module.models.NewsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
@@ -63,7 +64,7 @@ public class SocketListenerRunnable implements Runnable {
             String data = null;
 
             while ((data = br.readLine()) != null) {
-                log.info("Received message: {}", data);
+                processSenderMessage(data);
 
             }
         } catch (Exception e1) {
@@ -84,6 +85,23 @@ public class SocketListenerRunnable implements Runnable {
                 }
             }
 
+        }
+    }
+
+    private void processSenderMessage(String message) {
+        log.info("Socket received message: {}", message);
+
+        try {
+            LinkedHashMap<String, Object> newsModel = JsonUtils.toJavaObject(message);
+            NewsModel newModel = new NewsModel();
+            newModel.setAuthor((String) newsModel.get("author"));
+            newModel.setCategory((String) newsModel.get("category"));
+            newModel.setContent((String) newsModel.get("content"));
+
+            messageBroker.pushEvent(MessageBrokerEventType.PUBLISH, newModel);
+
+        } catch (Exception e) {
+            log.warn("Received unknown message: {}", e.getMessage());
         }
     }
 
