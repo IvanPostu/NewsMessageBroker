@@ -54,7 +54,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.ivan.custom_message_broker.App</mainClass>
+              <mainClass>com.ivan.custom_message_broker.MessageBrokerApp</mainClass>
             </manifest>
           </archive>
 

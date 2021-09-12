@@ -10,8 +10,8 @@ import javax.swing.SwingUtilities;
  * Hello world!
  *
  */
-public class App {
-    private static Logger log = LoggerFactory.getLogger(App.class);
+public class SenderApp {
+    private static Logger log = LoggerFactory.getLogger(SenderApp.class);
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

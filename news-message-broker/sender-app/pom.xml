@@ -46,7 +46,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.ivan.sender_app.App</mainClass>
+              <mainClass>com.ivan.sender_app.SenderApp</mainClass>
             </manifest>
           </archive>
 

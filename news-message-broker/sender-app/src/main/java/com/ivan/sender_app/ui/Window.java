@@ -1,7 +1,7 @@
 package com.ivan.sender_app.ui;
 
+import com.ivan.common_module.models.ConnectionType;
 import com.ivan.common_module.models.NewsModel;
-import com.ivan.sender_app.business_logic.ConnectionType;
 import com.ivan.sender_app.business_logic.SenderBusinessLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,11 +74,13 @@ public class Window extends JFrame {
             String author = authorTextField.getText();
             String category = categoryTextField.getText();
             String content = textArea.getText();
+            String topic = topickTextField.getText();
 
             NewsModel newsModel = new NewsModel();
             newsModel.setAuthor(author);
             newsModel.setCategory(category);
             newsModel.setContent(content);
+            newsModel.setTopic(topic);
 
             sendNews(newsModel);
         });

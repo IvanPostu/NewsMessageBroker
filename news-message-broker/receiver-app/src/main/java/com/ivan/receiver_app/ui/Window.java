@@ -1,5 +1,7 @@
 package com.ivan.receiver_app.ui;
 
+import com.ivan.common_module.models.ConnectionType;
+import com.ivan.receiver_app.business_logic.ReceiverBusinessLogic;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,17 +18,20 @@ import java.awt.GridLayout;
 
 public class Window extends JFrame {
     // private static Logger log = LoggerFactory.getLogger(Window.class);
+    private final ReceiverBusinessLogic receiverBusinessLogic;
 
-    public Window(String name) {
+    public Window(String name, ReceiverBusinessLogic receiverBusinessLogic) {
         super(name);
+
+        this.receiverBusinessLogic = receiverBusinessLogic;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(450, 300);
 
         JPanel topPanel = new JPanel();
         topPanel.setBackground(Color.lightGray);
         topPanel.add(new JLabel("Enter Topic"));
-        JTextField topickTextField = new JTextField(10);
-        topPanel.add(topickTextField);
+        JTextField topicTextField = new JTextField(10);
+        topPanel.add(topicTextField);
 
         JRadioButton tcpSocket = new JRadioButton("TCP Socket", true);
         JRadioButton gRpc = new JRadioButton("gRPC proto", false);
@@ -61,10 +66,17 @@ public class Window extends JFrame {
         reconnectButton.addActionListener(event -> {
 
             try {
-                // int port = Integer.parseInt(portTextField.getText());
 
+                ConnectionType connectionType = tcpSocket.isSelected()
+                        ? ConnectionType.TCP_SOCKET
+                        : gRpc.isSelected()
+                                ? ConnectionType.GRPC_PROTO
+                                : null;
+                String host = ipTextField.getText();
+                int port = Integer.parseInt(portTextField.getText());
+                String topic = topicTextField.getText();
 
-
+                reconnect(host, port, connectionType, topic);
             } catch (NumberFormatException exception) {
                 JOptionPane.showMessageDialog(getParent(),
                         "Invalid port.",
@@ -78,6 +90,7 @@ public class Window extends JFrame {
         JScrollPane scrollPane = new JScrollPane(textArea);
         JPanel centerPanel = new JPanel();
         centerPanel.add(BorderLayout.NORTH, scrollPane);
+
         centerPanel.add(BorderLayout.SOUTH, bottomPanel1);
 
         this.getContentPane().add(BorderLayout.SOUTH, bottomPanel2);
@@ -86,6 +99,20 @@ public class Window extends JFrame {
         this.setVisible(true);
         this.setLocationRelativeTo(null);
 
+    }
+
+    private void reconnect(String host, int port, ConnectionType connectionType, String topic) {
+
+        if (topic == null || "".equals(topic)) {
+            JOptionPane.showMessageDialog(getParent(),
+                    "Please set a valid topic",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+
+            return;
+        }
+
+        receiverBusinessLogic.reconnectAsync(host, port, connectionType, topic);
     }
 
 }

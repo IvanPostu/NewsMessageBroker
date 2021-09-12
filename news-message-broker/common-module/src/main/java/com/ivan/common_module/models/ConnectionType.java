@@ -1,4 +1,4 @@
-package com.ivan.sender_app.business_logic;
+package com.ivan.common_module.models;
 
 public enum ConnectionType {
     GRPC_PROTO, TCP_SOCKET

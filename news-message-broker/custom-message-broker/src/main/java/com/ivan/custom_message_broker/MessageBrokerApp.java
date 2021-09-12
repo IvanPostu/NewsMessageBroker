@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
-public class App {
-    private static Logger log = LoggerFactory.getLogger(App.class);
+public class MessageBrokerApp {
+    private static Logger log = LoggerFactory.getLogger(MessageBrokerApp.class);
 
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         log.info("Start message broker app");
