@@ -40,7 +40,8 @@ public class MessageBroker {
         }
 
         element.add(Pair.with(writer, receiverUuid));
-        // receivers.put(receiverUuid, Pair.with(writer, topic));
+
+        tryToSendMessagesFromQueueToReceivers();
     }
 
     public void receiverDisconnected(UUID receiverUuid, String topic) {
