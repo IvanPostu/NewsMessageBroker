@@ -102,7 +102,7 @@ public class SocketListenerRunnable implements Runnable {
             newModel.setAuthor((String) newsModel.get("author"));
             newModel.setCategory((String) newsModel.get("category"));
             newModel.setContent((String) newsModel.get("content"));
-            newModel.setTopic((String) newsModel.get("content"));
+            newModel.setTopic((String) newsModel.get("topic"));
 
             messageBroker.publishMessage(newModel);
 

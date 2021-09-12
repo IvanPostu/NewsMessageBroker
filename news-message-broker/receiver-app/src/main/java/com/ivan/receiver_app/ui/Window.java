@@ -19,6 +19,7 @@ import java.awt.GridLayout;
 public class Window extends JFrame {
     // private static Logger log = LoggerFactory.getLogger(Window.class);
     private final ReceiverBusinessLogic receiverBusinessLogic;
+    private final JTextArea out;
 
     public Window(String name, ReceiverBusinessLogic receiverBusinessLogic) {
         super(name);
@@ -48,9 +49,17 @@ public class Window extends JFrame {
 
         JPanel bottomPanel1 = new JPanel();
         bottomPanel1.setLayout(new GridLayout(3, 0));
-        JTextArea textArea = new JTextArea(10, 30);
-        textArea.setBackground(Color.WHITE);
-        textArea.setEditable(false);
+        out = new JTextArea(10, 30);
+        out.setBackground(Color.WHITE);
+        out.setEditable(false);
+        out.setText("");
+
+        receiverBusinessLogic.setReceiveCallback(n -> {
+            String text = String.format("Topic:%s\nCategory: %s\nAuthor: %s\nText:%s\n\n",
+                    n.getTopic(), n.getCategory(), n.getAuthor(), n.getContent());
+
+            out.setText(out.getText() + text);
+        });
 
         JPanel bottomPanel2 = new JPanel();
         bottomPanel2.setBackground(Color.LIGHT_GRAY);
@@ -87,7 +96,7 @@ public class Window extends JFrame {
         });
         bottomPanel2.add(reconnectButton);
 
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        JScrollPane scrollPane = new JScrollPane(out);
         JPanel centerPanel = new JPanel();
         centerPanel.add(BorderLayout.NORTH, scrollPane);
 

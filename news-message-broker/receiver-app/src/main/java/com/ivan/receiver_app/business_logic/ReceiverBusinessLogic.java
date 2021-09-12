@@ -3,13 +3,20 @@ package com.ivan.receiver_app.business_logic;
 import com.ivan.common_module.JsonUtils;
 import com.ivan.common_module.models.ConnectModel;
 import com.ivan.common_module.models.ConnectionType;
+import com.ivan.common_module.models.NewsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.LinkedHashMap;
+import java.util.function.Consumer;
 
 public class ReceiverBusinessLogic {
     private static Logger log = LoggerFactory.getLogger(ReceiverBusinessLogic.class);
@@ -19,6 +26,13 @@ public class ReceiverBusinessLogic {
      */
     private Socket messageBrokerSocket;
     private PrintWriter socketWriter;
+
+    private Consumer<NewsModel> receiveCallback = (m) -> {
+    };
+
+    public void setReceiveCallback(Consumer<NewsModel> receiveCallback) {
+        this.receiveCallback = receiveCallback;
+    }
 
     public void reconnectAsync(String host, int port, ConnectionType connectionType, String topic) {
         log.info("Reconnect to {} : {}", host, port);
@@ -42,9 +56,48 @@ public class ReceiverBusinessLogic {
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
         }
+
+        if (tcpSuccess) {
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                public Void doInBackground() {
+                    try (InputStream input = messageBrokerSocket.getInputStream();
+                            InputStreamReader isr = new InputStreamReader(input);
+                            BufferedReader br = new BufferedReader(isr);) {
+
+                        String data = null;
+
+                        while ((data = br.readLine()) != null) {
+                            processMessage(data);
+                        }
+
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                    }
+                    return null;
+                }
+            };
+            worker.execute();
+        }
+
     }
 
-    public void subscribeToTopic(String topic) {}
+    private void processMessage(String message) {
+        LinkedHashMap<String, Object> newsModel;
+        try {
+            newsModel = JsonUtils.toJavaObject(message);
+            NewsModel newModel = new NewsModel();
+            newModel.setAuthor((String) newsModel.get("author"));
+            newModel.setCategory((String) newsModel.get("category"));
+            newModel.setContent((String) newsModel.get("content"));
+            newModel.setTopic((String) newsModel.get("topic"));
+
+            this.receiveCallback.accept(newModel);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+    }
 
     private boolean connectWithSocket(String host, int port, String topic) {
         try {
