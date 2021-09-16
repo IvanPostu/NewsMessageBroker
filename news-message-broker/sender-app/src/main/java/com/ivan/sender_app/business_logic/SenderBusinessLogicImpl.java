@@ -26,11 +26,7 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
      * gRPC resources 
      */
 
-    @Override
-    public boolean isConnected() {
 
-        return false;
-    }
 
     @Override
     public void reconnectAsync(String host, int port, ConnectionType connectionType) {
@@ -105,21 +101,6 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
         }
 
         return false;
-    }
-
-    @Override
-    public void runLongPoolingCall(String host, String port) {
-
-    }
-
-    @Override
-    public boolean longPoolingRunning() {
-        return false;
-    }
-
-    @Override
-    public void stopLongPoolingCall(String host, String port) {
-
     }
 
     /**
