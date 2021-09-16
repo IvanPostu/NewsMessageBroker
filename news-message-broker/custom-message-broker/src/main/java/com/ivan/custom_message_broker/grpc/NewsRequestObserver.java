@@ -3,8 +3,11 @@ package com.ivan.custom_message_broker.grpc;
 import com.ivan.common_module.news.NewsRequest;
 import com.ivan.common_module.news.NewsResponse;
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NewsRequestObserver implements StreamObserver<NewsRequest> {
+    private static final Logger log = LoggerFactory.getLogger(RPCServer.class);
     private final StreamObserver<NewsResponse> newsResponseStreamObserver;
 
     public NewsRequestObserver(StreamObserver<NewsResponse> newsResponseStreamObserver) {
@@ -14,7 +17,9 @@ public class NewsRequestObserver implements StreamObserver<NewsRequest> {
     @Override
     public void onNext(NewsRequest value) {
         NewsResponse response = NewsResponse.newBuilder()
-                .setOk(1)
+                .setAuthor("qwe")
+                .setCategory("zzz")
+                .setContent("QQQQQQQ")
                 .build();
 
 
@@ -23,8 +28,7 @@ public class NewsRequestObserver implements StreamObserver<NewsRequest> {
 
     @Override
     public void onError(Throwable t) {
-        // TODO Auto-generated method stub
-
+        log.error("NewsRequestObserver onError: {}", t);
     }
 
     @Override

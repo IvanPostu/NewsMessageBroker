@@ -1,4 +1,4 @@
-package com.ivan.custom_message_broker;
+package com.ivan.custom_message_broker.tcp;
 
 import com.ivan.common_module.JsonUtils;
 import com.ivan.common_module.models.ConnectModel;

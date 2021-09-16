@@ -1,4 +1,4 @@
-package com.ivan.custom_message_broker;
+package com.ivan.custom_message_broker.tcp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

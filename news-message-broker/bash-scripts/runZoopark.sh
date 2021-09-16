@@ -11,7 +11,7 @@ SCRIPTPATH=`dirname $SCRIPT`
   && ($SCRIPTPATH/runReceiver.sh & ) \
   && ($SCRIPTPATH/runSender.sh & ) \
   && ($SCRIPTPATH/runSender.sh & ) \
-  && ($SCRIPTPATH/runBroker.sh & ) \
+  # && ($SCRIPTPATH/runBroker.sh & ) \
   && echo 'Hello world'
 
 

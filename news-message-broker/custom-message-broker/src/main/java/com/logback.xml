@@ -3,7 +3,7 @@
 
   <include resource="console-appender.xml" />
 
-  <logger name="com.ivan.custom_message_broker" level="DEBUG" additivity="false">
+  <logger name="com.ivan.custom_message_broker" level="INFO" defaultLevel="INFO" additivity="false">
     <appender-ref ref="CONSOLE" />
   </logger>
 

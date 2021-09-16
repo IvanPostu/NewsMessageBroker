@@ -13,10 +13,14 @@ message NewsRequest {
 }
 
 message NewsResponse {
-  int32 ok = 1;
+  string category = 1;
+  string author = 2;
+  string content = 3;
 }
 
 service NewsService {
+
   // bi-directional stream
   rpc send(stream NewsRequest) returns (stream NewsResponse);
+  
 }
