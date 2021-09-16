@@ -1,0 +1,44 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "Launch Grpc MessageBrokerApp",
+      "request": "launch",
+      "mainClass": "com.ivan.custom_message_broker.MessageBrokerApp",
+      "projectName": "custom-message-broker",
+      "args": "grpc"
+    },
+    {
+      "type": "java",
+      "name": "Launch TCP MessageBrokerApp",
+      "request": "launch",
+      "mainClass": "com.ivan.custom_message_broker.MessageBrokerApp",
+      "projectName": "custom-message-broker",
+      "args": "tcp"
+    },
+    {
+      "type": "java",
+      "name": "Launch ReceiverApp",
+      "request": "launch",
+      "mainClass": "com.ivan.receiver_app.ReceiverApp",
+      "projectName": "receiver-app"
+    },
+    {
+      "type": "java",
+      "name": "Launch SenderApp",
+      "request": "launch",
+      "mainClass": "com.ivan.sender_app.SenderApp",
+      "projectName": "sender-app"
+    }
+  ]
+}

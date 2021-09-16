@@ -16,14 +16,15 @@ public class NewsRequestObserver implements StreamObserver<NewsRequest> {
 
     @Override
     public void onNext(NewsRequest value) {
-        NewsResponse response = NewsResponse.newBuilder()
-                .setAuthor("qwe")
-                .setCategory("zzz")
-                .setContent("QQQQQQQ")
-                .build();
+        // NewsResponse response = NewsResponse.newBuilder()
+        //         .setAuthor("qwe")
+        //         .setCategory("zzz")
+        //         .setContent("QQQQQQQ")
+        //         .build();
 
 
-        this.newsResponseStreamObserver.onNext(response);
+        // this.newsResponseStreamObserver.onNext(response);
+        log.info("{}", value);
     }
 
     @Override

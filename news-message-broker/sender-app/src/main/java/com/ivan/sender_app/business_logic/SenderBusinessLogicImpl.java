@@ -4,6 +4,7 @@ import com.ivan.common_module.JsonUtils;
 import com.ivan.common_module.models.ConnectModel;
 import com.ivan.common_module.models.ConnectionType;
 import com.ivan.common_module.models.NewsModel;
+import com.ivan.sender_app.grpc.NewsGrpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.swing.JOptionPane;
@@ -25,7 +26,7 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
     /**
      * gRPC resources 
      */
-
+    private NewsGrpcClient newsGrpcClient;
 
 
     @Override
@@ -84,7 +85,9 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
     }
 
     private boolean connectWithGrpc(String host, int port) {
-        throw new RuntimeException("Not implemented");
+        newsGrpcClient = new NewsGrpcClient(host, port);
+
+        return true;
     }
 
     @Override
@@ -93,9 +96,22 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
 
         try {
             String jsonModel = JsonUtils.toJson(newsModel);
-            socketWriter.println(jsonModel);
-            socketWriter.flush();
-            return true;
+
+            if (socketWriter != null) {
+                log.info("Send data using tcp");
+                socketWriter.println(jsonModel);
+                socketWriter.flush();
+                return true;
+            }
+
+            if (newsGrpcClient != null) {
+                log.info("Send data using grpc");
+                newsGrpcClient.send(newsModel);
+                return true;
+            }
+
+            log.warn("Connection not found");
+            return false;
         } catch (Exception e) {
             log.error("sendNews error: {}", e);
         }
@@ -123,6 +139,15 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
+        }
+
+        if (newsGrpcClient != null) {
+            try {
+                newsGrpcClient.close();
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+            newsGrpcClient = null;
         }
     }
 }
