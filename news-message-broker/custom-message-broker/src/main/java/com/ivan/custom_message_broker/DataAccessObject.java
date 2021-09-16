@@ -3,6 +3,7 @@ package com.ivan.custom_message_broker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class DataAccessObject {
     private static final Logger log = LoggerFactory.getLogger(DataAccessObject.class);
     // private static final String DB_URL =

@@ -1,5 +1,6 @@
 package com.ivan.common_module.models;
 
+
 import lombok.Getter;
 import lombok.Setter;
 

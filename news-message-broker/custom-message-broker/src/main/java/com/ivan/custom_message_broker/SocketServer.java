@@ -2,14 +2,13 @@ package com.ivan.custom_message_broker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketServer {
+public class SocketServer implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(SocketServer.class);
     private static final int SERVER_PORT = 8080;
     private static final int THREAD_POOL_SIZE = 20;
@@ -22,7 +21,8 @@ public class SocketServer {
         this.threadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
     }
 
-    public void run() throws IOException, ClassNotFoundException {
+    @Override
+    public void run() {
 
         try (ServerSocket server = new ServerSocket(SERVER_PORT)) {
             log.info("Server is up on port: {}, thread pull size: {}", SERVER_PORT,
@@ -32,6 +32,8 @@ public class SocketServer {
                 UUID generatedUuid = UUID.randomUUID();
                 threadPool.submit(new SocketListenerRunnable(socket, generatedUuid, messageBroker));
             }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
 
     }

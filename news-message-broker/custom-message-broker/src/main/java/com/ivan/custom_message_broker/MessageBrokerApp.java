@@ -9,9 +9,11 @@ public class MessageBrokerApp {
 
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         log.info("Start message broker app");
-        MessageBroker messageBroker = new MessageBroker();
-        SocketServer socketServer = new SocketServer(messageBroker);
+        // MessageBroker messageBroker = new MessageBroker();
+        // SocketServer socketServer = new SocketServer(messageBroker);
 
-        socketServer.run();
+        // socketServer.run();
+
+        log.info(args[0]);
     }
 }
