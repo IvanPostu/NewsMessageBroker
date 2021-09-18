@@ -7,6 +7,10 @@
     <appender-ref ref="CONSOLE" />
   </logger>
 
+  <category name="io.grpc">
+    <priority value="INFO" />
+  </category>
+
   <root level="INFO">
     <appender-ref ref="CONSOLE" />
   </root>

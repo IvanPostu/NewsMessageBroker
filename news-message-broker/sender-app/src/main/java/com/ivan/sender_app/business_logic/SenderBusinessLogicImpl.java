@@ -7,7 +7,9 @@ import com.ivan.common_module.models.NewsModel;
 import com.ivan.sender_app.grpc.NewsGrpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.swing.JOptionPane;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -16,18 +18,16 @@ import java.net.Socket;
 public class SenderBusinessLogicImpl implements SenderBusinessLogic {
     private static Logger log = LoggerFactory.getLogger(SenderBusinessLogicImpl.class);
 
-
     /**
-     * TCP Socket resources 
+     * TCP Socket resources
      */
     private Socket messageBrokerSocket;
     private PrintWriter socketWriter;
 
     /**
-     * gRPC resources 
+     * gRPC resources
      */
     private NewsGrpcClient newsGrpcClient;
-
 
     @Override
     public void reconnectAsync(String host, int port, ConnectionType connectionType) {
@@ -35,37 +35,28 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
 
         closeOldResources();
 
-        boolean tcpSuccess = ConnectionType.TCP_SOCKET.equals(connectionType)
-                && connectWithSocket(host, port);
+        boolean tcpSuccess = ConnectionType.TCP_SOCKET.equals(connectionType) && connectWithSocket(host, port);
 
-        boolean grpcSuccess = ConnectionType.GRPC_PROTO.equals(connectionType)
-                && connectWithGrpc(host, port);
+        boolean grpcSuccess = ConnectionType.GRPC_PROTO.equals(connectionType) && connectWithGrpc(host, port);
 
         if (tcpSuccess || grpcSuccess) {
-            JOptionPane.showMessageDialog(null,
-                    "Connected with success " + connectionType.toString(),
-                    "Info",
+            JOptionPane.showMessageDialog(null, "Connected with success " + connectionType.toString(), "Info",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(null,
-                    "Connected with error ",
-                    "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Connected with error ", "Warning", JOptionPane.WARNING_MESSAGE);
         }
 
     }
 
     private boolean connectWithSocket(String host, int port) {
         try {
-            messageBrokerSocket = new Socket(
-                    InetAddress.getByName(host), port);
+            messageBrokerSocket = new Socket(InetAddress.getByName(host), port);
 
             boolean isConnected = messageBrokerSocket.isConnected();
             log.info("Socket is alive: {}", isConnected);
 
             if (isConnected) {
-                socketWriter = new PrintWriter(
-                        messageBrokerSocket.getOutputStream());
+                socketWriter = new PrintWriter(messageBrokerSocket.getOutputStream());
 
                 ConnectModel model = new ConnectModel();
                 model.setConnectionType(ConnectModel.SENDER_CONNECTION_TYPE);
@@ -92,7 +83,6 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
 
     @Override
     public boolean sendNews(NewsModel newsModel) {
-
 
         try {
             String jsonModel = JsonUtils.toJson(newsModel);
@@ -144,10 +134,10 @@ public class SenderBusinessLogicImpl implements SenderBusinessLogic {
         if (newsGrpcClient != null) {
             try {
                 newsGrpcClient.close();
+                newsGrpcClient = null;
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
-            newsGrpcClient = null;
         }
     }
 }

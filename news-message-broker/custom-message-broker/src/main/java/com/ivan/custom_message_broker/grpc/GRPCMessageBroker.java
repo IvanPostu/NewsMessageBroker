@@ -76,7 +76,7 @@ public class GRPCMessageBroker {
 
         targetQueue.add(newsModel);
 
-        // tryToSendMessagesFromQueueToReceivers();
+        tryToSendMessagesFromQueueToReceivers();
     }
 
     public void tryToSendMessagesFromQueueToReceivers() {

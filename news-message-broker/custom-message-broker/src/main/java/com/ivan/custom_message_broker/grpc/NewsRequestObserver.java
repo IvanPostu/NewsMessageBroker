@@ -13,6 +13,9 @@ public class NewsRequestObserver implements StreamObserver<NewsRequest> {
     private static final GRPCMessageBroker BROKER = new GRPCMessageBroker();;
     private final StreamObserver<NewsResponse> newsResponseStreamObserver;
     private final UUID uuid = UUID.randomUUID();
+    private boolean isReceiver = false;
+
+    private String subscribedTopic = "";
 
     public NewsRequestObserver(StreamObserver<NewsResponse> newsResponseStreamObserver) {
         this.newsResponseStreamObserver = newsResponseStreamObserver;
@@ -22,14 +25,11 @@ public class NewsRequestObserver implements StreamObserver<NewsRequest> {
     public void onNext(NewsRequest value) {
 
         if (value.getTopic().startsWith("subscribe:")) {
-            String subscribedTopic = value.getTopic().substring(10);
+            isReceiver = true;
+            subscribedTopic = value.getTopic().substring(10);
             BROKER.receiverConnected(uuid, subscribedTopic, (req) -> {
-                NewsResponse response = NewsResponse
-                        .newBuilder()
-                        .setAuthor(req.getAuthor())
-                        .setCategory(req.getCategory())
-                        .setContent(req.getCategory()).setTopic(req.getTopic())
-                        .build();
+                NewsResponse response = NewsResponse.newBuilder().setAuthor(req.getAuthor())
+                        .setCategory(req.getCategory()).setContent(req.getContent()).setTopic(req.getTopic()).build();
 
                 this.newsResponseStreamObserver.onNext(response);
             });
@@ -44,12 +44,18 @@ public class NewsRequestObserver implements StreamObserver<NewsRequest> {
     @Override
     public void onError(Throwable t) {
         log.error("NewsRequestObserver onError: {}", t);
+        if (isReceiver) {
+            BROKER.receiverDisconnected(uuid, subscribedTopic);
+        }
     }
 
     @Override
     public void onCompleted() {
 
-        System.out.println("Client reached safely");
+        log.info("Client reached safely");
+        if (isReceiver) {
+            BROKER.receiverDisconnected(uuid, subscribedTopic);
+        }
     }
 
 }

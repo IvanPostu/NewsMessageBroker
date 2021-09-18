@@ -17,7 +17,7 @@ public class MessageBrokerApp {
 
         try {
             String type = args[0];
-
+            
             if (type.equals("grpc")) {
                 log.info("Start grpc message broker app");
                 isTcp = false;
