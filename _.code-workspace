@@ -128,7 +128,7 @@
       "editor.formatOnSave": true,
     },
     "java.format.settings.profile": "IvanJavaCodeStyle",
-    "java.format.settings.url": "../Ivan_JavaCodeStyle.xml",
+    "java.format.settings.url": "./Ivan_JavaCodeStyle.xml",
     "java.configuration.updateBuildConfiguration": "disabled",
     "java.dependency.syncWithFolderExplorer": false,
     "java.referencesCodeLens.enabled": true,

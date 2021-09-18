@@ -5,6 +5,7 @@ import com.ivan.common_module.models.NewsModel;
 import org.javatuples.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,15 +16,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class MessageBroker {
-    private static final Logger log = LoggerFactory.getLogger(MessageBroker.class);
+public class TCPMessageBroker {
+    private static final Logger log = LoggerFactory.getLogger(TCPMessageBroker.class);
+    protected final Map<String, Queue<NewsModel>> data;
 
-    private final Map<String, Queue<NewsModel>> data;
-
-    //receiverId - [writer, topic]
+    // receiverId - [writer, topic]
     private final Map<String, List<Pair<PrintWriter, UUID>>> receivers;
 
-    public MessageBroker() {
+    public TCPMessageBroker() {
         data = new ConcurrentHashMap<>();
         receivers = new ConcurrentHashMap<>();
     }
@@ -46,7 +46,6 @@ public class MessageBroker {
 
     public void receiverDisconnected(UUID receiverUuid, String topic) {
         log.info("Trying to disconnect receiver with uid: {}", receiverUuid);
-
 
         if (receivers.containsKey(topic)) {
             List<Pair<PrintWriter, UUID>> subscribedReceivers = receivers.get(topic);
@@ -116,6 +115,5 @@ public class MessageBroker {
             log.error(e.getMessage());
         }
     }
-
 
 }

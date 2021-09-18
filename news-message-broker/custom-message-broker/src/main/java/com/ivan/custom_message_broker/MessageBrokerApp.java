@@ -1,10 +1,11 @@
 package com.ivan.custom_message_broker;
 
 import com.ivan.custom_message_broker.grpc.RPCServer;
-import com.ivan.custom_message_broker.tcp.MessageBroker;
 import com.ivan.custom_message_broker.tcp.SocketServer;
+import com.ivan.custom_message_broker.tcp.TCPMessageBroker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 public class MessageBrokerApp {
@@ -12,7 +13,7 @@ public class MessageBrokerApp {
 
     public static void main(String[] args) throws ClassNotFoundException, IOException {
 
-        boolean isTcp = true;
+        boolean isTcp = false;
 
         try {
             String type = args[0];
@@ -40,7 +41,7 @@ public class MessageBrokerApp {
         Runnable server;
 
         if (isTcp) {
-            MessageBroker messageBroker = new MessageBroker();
+            TCPMessageBroker messageBroker = new TCPMessageBroker();
             server = new SocketServer(messageBroker);
         } else {
             server = new RPCServer();

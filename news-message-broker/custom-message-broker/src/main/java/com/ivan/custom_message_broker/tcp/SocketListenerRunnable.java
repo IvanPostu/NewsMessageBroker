@@ -5,6 +5,7 @@ import com.ivan.common_module.models.ConnectModel;
 import com.ivan.common_module.models.NewsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,9 +18,9 @@ public class SocketListenerRunnable implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(SocketListenerRunnable.class);
     private final Socket socket;
     private final UUID connectionUuid;
-    private final MessageBroker messageBroker;
+    private final TCPMessageBroker messageBroker;
 
-    public SocketListenerRunnable(Socket socket, UUID connectionUuid, MessageBroker messageBroker) {
+    public SocketListenerRunnable(Socket socket, UUID connectionUuid, TCPMessageBroker messageBroker) {
         this.socket = socket;
         this.connectionUuid = connectionUuid;
         this.messageBroker = messageBroker;
@@ -30,7 +31,6 @@ public class SocketListenerRunnable implements Runnable {
         try {
 
             String data = br.readLine();
-
 
             LinkedHashMap<String, Object> connectModelHashSet = JsonUtils.toJavaObject(data);
             ConnectModel connectModel = new ConnectModel();
@@ -51,20 +51,16 @@ public class SocketListenerRunnable implements Runnable {
         try (InputStream input = socket.getInputStream();
                 InputStreamReader isr = new InputStreamReader(input);
                 BufferedReader br = new BufferedReader(isr);
-                PrintWriter socketWriter = new PrintWriter(
-                        socket.getOutputStream());) {
+                PrintWriter socketWriter = new PrintWriter(socket.getOutputStream());) {
 
             connectModel = processConnectEvent(br);
-
 
             if (connectModel.getConnectionType().equals(ConnectModel.SENDER_CONNECTION_TYPE)) {
                 messageBroker.senderConnected(connectionUuid);
             }
-            if (connectModel.getConnectionType()
-                    .startsWith(ConnectModel.RECEIVER_SUBSCRIBE_TO_TOPIC)) {
+            if (connectModel.getConnectionType().startsWith(ConnectModel.RECEIVER_SUBSCRIBE_TO_TOPIC)) {
 
-                topic = connectModel.getConnectionType()
-                        .substring(ConnectModel.RECEIVER_SUBSCRIBE_TO_TOPIC.length());
+                topic = connectModel.getConnectionType().substring(ConnectModel.RECEIVER_SUBSCRIBE_TO_TOPIC.length());
 
                 messageBroker.receiverConnected(connectionUuid, socketWriter, topic);
             }
@@ -80,8 +76,7 @@ public class SocketListenerRunnable implements Runnable {
         } finally {
 
             if (connectModel != null) {
-                if (connectModel.getConnectionType()
-                        .startsWith(ConnectModel.RECEIVER_SUBSCRIBE_TO_TOPIC)) {
+                if (connectModel.getConnectionType().startsWith(ConnectModel.RECEIVER_SUBSCRIBE_TO_TOPIC)) {
 
                     messageBroker.receiverDisconnected(connectionUuid, topic);
                 }

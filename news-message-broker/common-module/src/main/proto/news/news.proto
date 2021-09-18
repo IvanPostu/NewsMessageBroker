@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package news;
 
 option java_package = "com.ivan.common_module.news";
@@ -24,5 +26,5 @@ service NewsService {
 
   // bi-directional stream
   rpc send(stream NewsRequest) returns (stream NewsResponse);
-  
+
 }
